@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { DataGrid, GridColDef, GridCellParams } from '@mui/x-data-grid'
 import Snackbar from '@mui/material/Snackbar'
 import { getCars, deleteCar } from '../api/carapi'
+import AddCar from './AddCar'
 
 
 function Carlist() {
@@ -55,6 +56,7 @@ function Carlist() {
   else if (isSuccess) {
     return (
       <>
+        <AddCar/>
         <DataGrid
           rows={data}
           columns={columns}
