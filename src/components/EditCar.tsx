@@ -2,7 +2,9 @@ import { useState } from 'react'
 import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
 import DialogTitle from '@mui/material/DialogTitle'
-import { Car, CarResponse } from '../types'
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { Car, CarResponse, CarEntry } from '../types'
+import { updateCar } from '../api/carapi'
 import CarDialogContent from './CarDialogContent'
 
 
@@ -11,7 +13,7 @@ type FormProps = {
 }
 
 function EditCar({ cardata }: FormProps) {
-  // const queryClient = userQueryClient();
+  const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const [car, setCar] = useState<Car>({
     brand: '',
@@ -20,6 +22,15 @@ function EditCar({ cardata }: FormProps) {
     registrationNumber: '',
     modelYear: 0,
     price: 0
+  });
+
+  const { mutate } = useMutation(updateCar, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(["cars"]);
+    },
+    onError: (err) => {
+      console.error(err);
+    }
   });
 
   const handleClickOpen = () => {
@@ -40,6 +51,12 @@ function EditCar({ cardata }: FormProps) {
   }
 
   const handleSave = () => {
+    const url = cardata._links.self.href;
+    const carEntry: CarEntry = {car, url}
+    mutate(carEntry);
+    setCar({ brand: '', model: '', color: '', registrationNumber: '', 
+      modelYear: 0, price: 0})
+
     setOpen(false);
   }
 
