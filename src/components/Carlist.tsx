@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { DataGrid, GridColDef, GridCellParams, GridToolbar } from '@mui/x-data-grid'
 import Snackbar from '@mui/material/Snackbar'
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { getCars, deleteCar } from '../api/carapi'
 import AddCar from './AddCar'
 import EditCar from './EditCar'
@@ -31,13 +33,14 @@ function Carlist() {
     {field: 'delete', headerName: '', width: 90, sortable: false, 
       filterable: false, disableColumnMenu: true,
       renderCell: (params: GridCellParams) => (
-        <button onClick={() => {
-          if (window.confirm(`Are you sure you want to delete ${params.row.brand} ${params.row.model}?`)) {
-            mutate(params.row._links.car.href)
-          }
-        }}>
-          Delete
-        </button>
+        <IconButton aria-label="delete" size="small"
+          onClick={() => {
+            if (window.confirm(`Are you sure you want to delete ${params.row.brand} ${params.row.model}?`)) {
+              mutate(params.row._links.car.href)
+            }
+          }}>
+          <DeleteIcon fontSize="small" />
+        </IconButton>
       )
     }
   ]
